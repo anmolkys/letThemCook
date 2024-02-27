@@ -1,4 +1,6 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const { richTextFromMarkdown } = require('@contentful/rich-text-from-markdown');
+
 require('dotenv').config();
 
 
@@ -12,7 +14,8 @@ async function getSummary(dataBuffer){
         try{
             const prompt = "Summarize the following text for me in under 300 words please and if it has multiple points or sub topics you can create points for them and extend the word limit keeping in mind the result text is short and crisp : "+dataBuffer
             let x = await model.generateContent(prompt);
-            return x.response.text()
+            let text = await richTextFromMarkdown(x.response.text())
+            return text
             console.log(x.response.text());
             }
         catch(error){
@@ -22,11 +25,11 @@ async function getSummary(dataBuffer){
 }
 
 async function ask(dataBuffer,question){
-    console.log("Trying prompt")
         try{
-            const prompt = "Try to answer this question "+question+" from this information provided and you have to interpret the information in the best way you can "+dataBuffer
+            const prompt = "Answer this question "+question+" from this information provided and you have to interpret the information in the best way you can "+dataBuffer
             let x = await model.generateContent(prompt);
-            return x.response.text()
+            let text = await richTextFromMarkdown(x.response.text())
+            return text
             console.log(x.response.text());
             }
         catch(error){
